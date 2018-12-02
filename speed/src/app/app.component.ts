@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { SwUpdate } from '@angular/service-worker';
+import { UpdateAvailableEvent} from '@angular/service-worker/src/low_level';
 
 @Component({
   selector: 'app-root',
@@ -7,4 +9,16 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'speed';
+  public developerVersion = '5';
+  constructor(swUpdate: SwUpdate) {
+    if (swUpdate.isEnabled) {
+      swUpdate.available.subscribe(
+        (event: UpdateAvailableEvent) => {
+          const msg = `Current ${event.current.hash}. Load new: ${event.available.hash} ?`;
+          if (confirm(msg)) { window.location.reload(); }
+        }
+      );
+
+    }
+  }
 }
